@@ -1,0 +1,50 @@
+'use strict';
+/**
+ * Created by Tung Nguyen on 12/21/15.
+ */
+angular.module('themesApp')
+    .service('$auth', ['$http', '$resource', '$localStorage', function($http, $resource, $localStorage) {
+        if (!store.enabled) {
+            alert('Local storage is not supported by your browser. Please disable "Private Mode", or upgrade to a modern browser.');
+            return
+        };
+
+        var local = $localStorage;
+
+        var $auth = {
+            authKey: "__Authorization",
+            userKey: "__User",
+
+            setToken: function(token) {
+                if (!token) {
+                    token = $auth.getToken() ? $auth.getToken() : null;
+                }
+                $localStorage[$auth.authKey] = token;
+                $http.defaults.headers.common['Authorization'] = token;
+            },
+            getToken: function() {
+                return $localStorage[$auth.authKey] || undefined;
+            },
+            clearToken: function() {
+                delete $localStorage[$auth.authKey];
+                delete $http.defaults.headers.common['Authorization'];
+            },
+            setUser: function(user) {
+                $auth.setToken(user.token);
+                $localStorage[$auth.userKey] = JSON.stringify(user.user);
+            },
+            getUser: function() {
+                var user = $localStorage[$auth.userKey];
+                if (user === undefined) {
+                    return $auth.clearToken();
+                }
+                return JSON.parse(user);
+            },
+            clearUser: function() {
+                $auth.clearToken();
+                delete $localStorage[$auth.userKey];
+            }
+
+        };
+        return $auth;
+    }])

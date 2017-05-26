@@ -1,0 +1,84 @@
+/**
+ * Created by cntt5_000 on 5/4/2017.
+ */
+angular.module('themesApp')
+    .controller('previewLadipageCtr', ['$rootScope','$scope', '$timeout', '$restful','$state','$stateParams',
+        function ($rootScope,$scope, $timeout, $restful, $state, $stateParams) {
+            $('body').removeClass('theme');
+            var url = localStorage.getItem('urlPreviewLadipage');
+            $scope.previewmobile = 'false';
+            if($stateParams.ladi && $stateParams.ladi.length > 0){
+                $restful.get('/app/FindTemplate', {id: $stateParams.ladi}, function (e, r) {
+                    if(r && r.data && r.code == 200){
+                        //var dummyData = JSON.parse(r.data.source);
+                        //var apiElement = dummyData.apiElement;
+                        if(r.data.domain.search('http') == -1) {
+                            url = 'http://' + r.data.domain;
+                        }else{
+                            url = r.data.domain;
+                        }
+                        //var htmlHead = '';
+                        //htmlHead += '<title class="title-site">' + dummyData.title + '</title>';
+                        //htmlHead += '<meta name="description" content="' + dummyData.desc + '">';
+                        //htmlHead += '<meta name="keywords" content="' + dummyData.keyword + '">';
+                        //
+                        //htmlHead += '<meta property="og:title" content="'+dummyData.title+'" />';
+                        //htmlHead += '<meta property="og:type" content="website" />';
+                        //htmlHead += '<meta property="og:url" content="'+url+'" />';
+                        //htmlHead += '<meta property="og:image" content="' + dummyData.imagePage + '">';
+                        //htmlHead += '<meta property="og:description" content="'+dummyData.desc+'" />';
+                        //if (dummyData.imageFavicon && dummyData.imageFavicon.length > 0) {
+                        //    htmlHead += '<link rel="shortcut icon" type="image/png" href="' + dummyData.imageFavicon + '"/>';
+                        //}
+                        //$('head').append(htmlHead);
+                        $('.iframe-content iframe').attr('src',url);
+                    }else{
+                        $('.iframe-content iframe').attr('src',url);
+                    }
+                });
+            }else{
+                if(url && url.length > 0){
+                    $('.iframe-content iframe').attr('src',url);
+                }else{
+                    $scope.gotoTheme();
+                }
+            }
+            //var url = localStorage.getItem('urlPreviewLadipage');
+            //if(url && url.length > 0){
+            //    url = 'http://'+localStorage.getItem('urlPreviewLadipage');
+            //    $('.iframe-content iframe').attr('src',url);
+            //}else{
+            //    $scope.gotoTheme();
+            //}
+            //======================constructor========================
+
+            //=====================function logic======================
+            $scope.gotoTheme = function(){
+                $state.go('themes');
+            };
+            $scope.previewDesktop = function(){
+                $scope.previewmobile = 'false';
+                $('section.new-landipage').removeClass('ladi-mobile');
+            };
+            $scope.previewMobile = function(){
+                $scope.previewmobile = 'true';
+                $('section.new-landipage').addClass('ladi-mobile');
+            };
+            $scope.usingLadipage = function(){
+                var id = '';
+                if($stateParams.ladi && $stateParams.ladi.length > 0){
+                    id = $stateParams.ladi;
+                }else{
+                    if(localStorage.getItem('ladi') && localStorage.getItem('ladi').length > 0){
+                        id = localStorage.getItem('ladi');
+                    }
+                }
+                if(id && id.length > 0) {
+                    var url = 'https://builder.ladipage.vn/#/login/' + id;
+                    window.open(url, '_top');
+                }else{
+                    console.log('ko có id');
+                }
+            }
+        }
+    ]);

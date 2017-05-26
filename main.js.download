@@ -1,0 +1,17 @@
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name ladiApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the ladiApp
+ */
+angular.module('themesApp')
+    .controller('MainCtrl',['$state',function ($state) {
+        this.awesomeThings = [
+            'HTML5 Boilerplate',
+            'AngularJS',
+            'Karma'
+        ];
+    }])

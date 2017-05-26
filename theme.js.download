@@ -1,0 +1,90 @@
+/**
+ * Created by cntt5_000 on 3/28/2017.
+ */
+angular.module('themesApp')
+    .controller('themesLadipageCtr', ['$rootScope','$scope', '$timeout', '$restful','$state','$stateParams',
+        function ($rootScope,$scope, $timeout, $restful, $state, $stateParams) {
+            $('body').addClass('theme');
+            $scope.typeCate = '10';
+            $scope.idCate = '';
+            $scope.start = 1;
+            $scope.urlPreview = ApiStatic + '/landingpages/';
+            // Get Category
+            $('.parLoading').show();
+            $('.load-more').hide();
+            $scope.getCategory = function (cate) {
+                $scope.start = 1;
+                $scope.typeCate = cate;
+                $restful.get('/app/category', {type: cate, limit: 50, countTemplate: true}, function (e, r) {
+                    if (r && r.data && r.code == 200) {
+                        $scope.categories = r.data;
+                    }
+                });
+                $scope.getTemplate('');
+            };
+            //===========get template=============
+            $scope.getTemplate = function(idCate){
+                $('.item-tem').show();
+                $scope.start = 1;
+                $('.parLoading').show();
+                $scope.idCate = idCate;
+                $restful.get('/app/findbytempsession', {type: $scope.typeCate, cid: $scope.idCate, limit: 18, is_publish: '1', page:$scope.start}, function (e, r) {
+                    if (r && r.data && r.data.length > 0 && r.code == 200) {
+                        $scope.templates = r.data;
+                        if(r.data.length < 18){
+                            $scope.start = 1;
+                            $('.load-more').hide();
+                        }else{
+                            $('.load-more').show();
+                        }
+                    }else{
+                        $scope.templates = [];
+                        $('.item-tem').hide();
+                    }
+                    setTimeout(function(){
+                        $('.parLoading').hide();
+                    },2000);
+
+                });
+            };
+            //=================== run ===============
+            $scope.getCategory($scope.typeCate);
+            //==================== preview ladipage =============
+            $scope.previewLadipage = function(id, domain){
+                localStorage.setItem('urlPreviewLadipage',domain);
+                localStorage.setItem('ladi',id);
+                var url = $state.href('preview-ladipage', {ladi: id});
+                window.open(url,'_blank');
+                //$state.go('preview-ladipage',{ladi: id},'_blank');
+            };
+            //==================== using ladipage ===============
+            $scope.usingLadipage = function(id){
+                var url = 'https://builder.ladipage.vn/#/login/'+id;
+                window.open(url,'_top');
+            };
+            //===================load more ladipage===========
+            $scope.loadmore = function(){
+                $('.parLoading').show();
+                $scope.start++;
+                $restful.get('/app/findbytempsession', {type: $scope.typeCate, cid: $scope.idCate, limit: 18, is_publish: '1', page:$scope.start}, function (e, r) {
+                    if (r && r.data && r.data.length > 0 && r.code == 200) {
+                        for(var i = 0; i< r.data.length; i++){
+                            $scope.templates.push(r.data[i]);
+                        }
+                        if(r.data.length < 18){
+                            $scope.start = 1;
+                            $('.load-more').hide();
+                        }else{
+                            $scope.start++;
+                            $('.load-more').show();
+                        }
+                    }else{
+                        $scope.start = 1;
+                        $('.load-more').hide();
+                    }
+                    setTimeout(function(){
+                        $('.parLoading').hide();
+                    },2000);
+                });
+            }
+        }]);

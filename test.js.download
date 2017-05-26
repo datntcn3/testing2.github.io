@@ -1,0 +1,18 @@
+/**
+ * Created by cntt5_000 on 3/28/2017.
+ */
+angular.module('themesApp')
+    .controller('testCtr', ['$rootScope','$scope', '$timeout', '$restful','$state','$stateParams','$http',
+        function ($rootScope,$scope, $timeout, $restful, $state, $stateParams,$http) {
+            $scope.check = function(){
+                //$http.defaults.headers.common['Authorization'] = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU4YTU3MTAzYjA1N2JmMDc3OTFkNTI3MyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTQ5NTAxMDgyNywiZXhwIjoxNDk1MDk3MjI3LCJhdWQiOiIxIiwiaXNzIjoiMSJ9.Ge0qO56-T91kYGiztPGvwMS2f4ScBCrWV6fi6Z6YLzQ';
+                //$restful.get('/user/me', function (e, r) {
+                //
+                //
+                //});
+                $http.get('https://api.ladipage.vn/v1/user/me', {
+                    headers: {'Authorization': 'Basic eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU4YTU3MTAzYjA1N2JmMDc3OTFkNTI3MyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTQ5NTAxMDgyNywiZXhwIjoxNDk1MDk3MjI3LCJhdWQiOiIxIiwiaXNzIjoiMSJ9.Ge0qO56-T91kYGiztPGvwMS2f4ScBCrWV6fi6Z6YLzQ'}
+                });
+            };
+
+        }]);

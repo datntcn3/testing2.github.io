@@ -1,0 +1,73 @@
+'use strict';
+
+/**
+ * @ngdoc overview
+ * @name ladiApp
+ * @description
+ * # ladiApp
+ *
+ * Main module of the application.
+ *
+ */
+
+/**
+ * api product
+ * */
+var ApiPath = 'https://api.ladipage.vn/v1';
+var ApiStatic = 'https://static.ladipage.net/';
+var ApiBase = 'https://builder.ladipage.vn';
+var ApiThemes = 'http://themes.ladipage.vn';
+var ApiDemo = 'http://demo.ladipage.me/';
+var ApiStaticM = 'https://static.ladipage.net/m/';
+var ApiStaticT = 'https://static.ladipage.net/t/';
+var ApiStaticD = 'https://static.ladipage.net/d/';
+
+//io.sails.url = 'https://api.ladipage.vn/';
+
+
+/**
+ * api test dev
+ * */
+angular.module('themesApp', [
+        'ui.router',
+    ])
+    .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider',
+            function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
+                //$httpProvider.defaults.withCredentials = true;
+                // $locationProvider.html5Mode(true);
+                $urlRouterProvider.otherwise("/themes");
+                $stateProvider
+                    .state('index', {
+                        abstract: true,
+                        url: '',
+                        templateUrl: 'index.html',
+                        data: {pageTitle: ''}
+                    })
+                    .state('themes',{
+                        url: '/themes',
+                        templateUrl: 'views/theme/theme.html',
+                        data: {pageTitle: 'Mẫu Ladipage'}
+                    })
+                    .state('preview-ladipage',{
+                        url:'/preview-ladipage?ladi',
+                        templateUrl:'views/theme/preview.html',
+                        data:{pageTitle:'Xem Trước Ladipage'}
+                    })
+                    .state('test',{
+                        url:'/test',
+                        templateUrl:'views/theme/test.html',
+                        data: {pageTitle:'test'}
+                    })
+
+                //$httpProvider.defaults.headers.common = {};
+                //$httpProvider.defaults.headers.post = {};
+                //$httpProvider.defaults.headers.put = {};
+                //$httpProvider.defaults.headers.get = {};
+                //$httpProvider.defaults.headers.patch = {};
+            }],
+        ['$compileProvider', function ($compileProvider) {
+            $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|blob):/);
+        }])
+    .run(['$rootScope', function ($rootScope) {
+
+    }]);

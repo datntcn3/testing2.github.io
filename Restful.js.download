@@ -1,0 +1,86 @@
+'use strict';
+/**
+ * Created by Tung Nguyen on 12/21/15.
+ */
+angular.module('themesApp')
+    .service('$restful', ['$http', function ($http) {
+        return {
+            get: function (resource, data, callback) {
+                callback = (data && typeof data == 'function') ? data : callback;
+                $http.get(ApiPath + resource, {params: data},{withCredentials: true}).success(function (resp) {
+                    if (resp.error) {
+                        swal('', resp.message, 'warning');
+                        return callback(resp, null);
+                    }
+                    return callback(null, resp);
+                }).error(function (error) {
+                    return callback(error, null);
+                })
+            },
+
+            post: function (resource, data, callback) {
+                callback = (data && typeof data == 'function') ? data : callback;
+                $http.post(ApiPath + resource, data || {}).success(function (resp, bla) {
+                    if (resp.error) {
+                        swal('', resp.message, 'warning');
+                        return callback(resp, null);
+                    }
+                    return callback(null, resp);
+                }).error(function (error) {
+                    return callback(error, null);
+                })
+            },
+            put: function (resource, data, callback) {
+                callback = (data && typeof data == 'function') ? data : callback;
+                $http.put(ApiPath + resource, data || {}).success(function (resp, bla) {
+                    if (resp.error) {
+                        swal('', resp.message, 'warning');
+                        return callback(resp, null);
+                    }
+                    return callback(null, resp);
+                }).error(function (error) {
+                    return callback(error, null);
+                })
+            },
+            delete: function (resource, data, callback) {
+                callback = (data && typeof data == 'function') ? data : callback;
+                $http.delete(ApiPath + resource, {params: data}).success(function (resp) {
+                    if (resp.error) {
+                        swal('', resp.message, 'warning');
+                        return callback(resp, null);
+                    }
+                    return callback(null, resp);
+                }).error(function (error) {
+                    return callback(error, null);
+                })
+            },
+            test: function(resource, data, callback){
+                callback = (data && typeof data == 'function') ? data : callback;
+                $http.post(resource, {params: data}).success(function (resp) {
+                    if (resp.error) {
+                        swal('', resp.message, 'warning');
+                        return callback(resp, null);
+                    }
+                    return callback(null, resp);
+                }).error(function (error) {
+                    return callback(error, null);
+                })
+            }
+        };
+    }])
+    .factory('authInterceptorService', ['$q', '$rootScope', function ($q, $rootScope) {
+        var responseError = function (rejection) {
+            if (rejection.status === 401) {
+                $rootScope.logout();
+            }
+            return $q.reject(rejection);
+        };
+
+        return {
+            responseError: responseError
+        };
+    }])
+    .config(['$httpProvider', function ($httpProvider) {
+        $httpProvider.interceptors.push('authInterceptorService');
+    }]);
+
